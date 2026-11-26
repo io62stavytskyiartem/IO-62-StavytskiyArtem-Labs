@@ -11,9 +11,12 @@ int A[M][N] = {
     { 7,  7,  7,  7,  7,  7,  7},
     {60, 50, 40, 30, 20, 10, 99}
 };
-void sort_row(int *arr)
+
+void sort_row(int *arr, int *comparisons, int *shifts)
 {
     int last_sorted_indx = 0;
+    *comparisons = 0;
+    *shifts = 0;
     while (last_sorted_indx < N - 1)
     {
         int l = 0;
@@ -22,27 +25,32 @@ void sort_row(int *arr)
         while (r >= l)
         {
             int m = (r + l) / 2;
+            (*comparisons)++;
             if (key > arr[m])
             {
                 r = m - 1;
             }
             else
             {
-                l = m + 1 ;
+                l = m + 1;
             }
         }
-        for(int i = last_sorted_indx; i >= l; i--){
-            arr[i+1] = arr[i]; 
+        for (int i = last_sorted_indx; i >= l; i--)
+        {
+            arr[i + 1] = arr[i];
+            (*shifts)++;
         }
         arr[l] = key;
         last_sorted_indx++;
     }
 }
 
-
-void print_matrix(int matrix[M][N]){
-    for(int row = 0; row < M; row++){
-        for(int number = 0; number < N; number++){
+void print_matrix(int matrix[M][N])
+{
+    for (int row = 0; row < M; row++)
+    {
+        for (int number = 0; number < N; number++)
+        {
             printf("%-5d", matrix[row][number]);
         }
         printf("\n");
@@ -50,15 +58,28 @@ void print_matrix(int matrix[M][N]){
     printf("-----------------------------------\n");
 }
 
+int main()
+{
+    int comparisons[M];
+    int shifts[M];
 
-int main(){
     printf("-----------------------------------\n");
     printf("Before sorting:\n\n");
     print_matrix(A);
-    for(int row = 0; row < M; row++){
-        sort_row(A[row]);
+
+    for (int row = 0; row < M; row++)
+    {
+        sort_row(A[row], &comparisons[row], &shifts[row]);
     }
+
     printf("After sorting:\n\n");
     print_matrix(A);
+
+    printf("Statistics:\n\n");
+    printf("%-6s %-13s %-8s\n", "Row", "Comparisons", "Shifts");
+    for (int row = 0; row < M; row++)
+    {
+        printf("%-6d %-13d %-8d\n", row, comparisons[row], shifts[row]);
+    }
     return 0;
 }
